@@ -1,4 +1,4 @@
-# 🐉 Shadow of Termux 🐉
+# 🐉 Shadow of Termux 
 
 **Shadow of Termux** adalah game RPG berbasis terminal di Termux (Python 3).  
 Kamu bisa menjelajahi dunia, bertarung melawan monster, mengalahkan boss, mengumpulkan loot, dan level-up hero-mu!
@@ -24,11 +24,11 @@ Kamu bisa menjelajahi dunia, bertarung melawan monster, mengalahkan boss, mengum
 ```bash
 git clone https://github.com/Mogu2709/shadow-of-termux.git
 cd shadow-of-termux
-
+```
 ## Jalankan Game
 ```bash
 python main.py
-
+```
 
 
 ## Menu Gameplay:
