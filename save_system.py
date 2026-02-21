@@ -6,7 +6,19 @@ SAVE_DIR = "saves"
 if not os.path.exists(SAVE_DIR):
     os.makedirs(SAVE_DIR)
 
+def get_save_preview(name):
+    filepath = os.path.join(SAVE_DIR, f"{name}.json")
+    with open(filepath, "r") as f:
+        data = json.load(f)
+    return data["level"], data["hp"]
 
+def delete_save(name):
+    filepath = os.path.join(SAVE_DIR, f"{name}.json")
+    if os.path.exists(filepath):
+        os.remove(filepath)
+        return True
+    return False
+    
 def save_game(player):
     if not player.save_slot:
         while True:

@@ -1,87 +1,125 @@
 from player import Player
-from enemy import generate_enemy
-from enemy import generate_enemy, generate_boss
+from enemy import Enemy
 from battle import battle
-from save_system import save_game, load_game, list_saves
-from colorama import init
-import os
-
-init()
+from save_system import (
+    save_game,
+    load_game,
+    list_saves,
+    get_save_preview,
+    delete_save
+)
 
 def main():
     print("=== 🐉 SHADOW OF TERMUX 🐉 ===")
 
+    player = None
+
+    # ===== MAIN MENU =====
     while True:
-        print("1. New Game")
+        print("\n1. New Game")
         print("2. Load Game")
+        print("3. Quit")
 
-        start_choice = input("Choose: ")
+        choice = input("Choose: ").strip()
 
-        if start_choice == "1":
-            name = input("Enter your hero name: ")
+        # ===== NEW GAME =====
+        if choice == "1":
+            name = input("Enter hero name: ").strip().lower()
+
+            saves = list_saves()
+            if name in saves:
+                print("❌ Save name already exists!")
+                continue
+
             player = Player(name)
+            player.save_slot = name
+            print(f"🔥 Welcome, {name}!")
             break
 
-        elif start_choice == "2":
+        # ===== LOAD GAME =====
+        elif choice == "2":
             saves = list_saves()
 
             if not saves:
-                print("❌ No save files found.")
+                print("❌ No save file found.")
                 continue
 
-            print("\nAvailable Saves:")
-            for i, save in enumerate(saves):
-                print(f"{i + 1}. {save}")
+            while True:
+                print("\nAvailable Saves:\n")
 
-            choice = input("Select save number: ")
+                for i, save_name in enumerate(saves):
+                    level, hp = get_save_preview(save_name)
+                    print(f"{i+1}. {save_name} — Lv{level} • HP {hp}")
 
-            try:
-                index = int(choice) - 1
-                if index < 0 or index >= len(saves):
-                    raise ValueError
+                print("\nD. Delete Save")
+                print("B. Back")
 
-                selected_name = saves[index]
-                data = load_game(selected_name)
+                select = input("Select option: ").strip().lower()
 
-                player = Player.from_dict(data)
-                player.save_slot = selected_name
+                if select == "b":
+                    break
 
-                print("✅ Game loaded!")
+                elif select == "d":
+                    del_name = input("Enter save name to delete: ").strip().lower()
+                    if delete_save(del_name):
+                        print("🗑 Save deleted.")
+                        saves = list_saves()
+                    else:
+                        print("❌ Save not found.")
+
+                elif select.isdigit():
+                    index = int(select) - 1
+
+                    if 0 <= index < len(saves):
+                        selected_name = saves[index]
+                        data = load_game(selected_name)
+
+                        player = Player.from_dict(data)
+                        player.save_slot = selected_name
+
+                        print("✅ Game loaded!")
+                        break
+                    else:
+                        print("❌ Invalid number.")
+
+                else:
+                    print("❌ Invalid option.")
+
+            if player:
                 break
-            except:
-                print("❌ Invalid selection.")
-                continue
+
+        elif choice == "3":
+            print("Goodbye!")
+            return
 
         else:
-            print("❌ Invalid choice. Please select 1 or 2.")
-                   
-    while player.is_alive():
+            print("❌ Invalid option!")
+
+    # ===== GAME LOOP =====
+    while player.hp > 0:
         print("\n1. Explore")
         print("2. Save Game")
         print("3. Quit")
 
-        choice = input("Choose: ")
+        choice = input("Choose: ").strip()
 
         if choice == "1":
-            if player.level % 5 == 0:
-                print("\n🔥 BOSS ENCOUNTER 🔥")
-                enemy = generate_enemy(player.level)
-            else:
-                enemy = generate_enemy(player.level)
-            
+            enemy = Enemy.generate(player.level)
             battle(player, enemy)
 
         elif choice == "2":
             save_game(player)
+            print("💾 Game saved!")
 
         elif choice == "3":
             print("Goodbye, hero!")
             break
 
         else:
-            print("Invalid option!")
+            print("❌ Invalid option!")
 
     print("\nGame Over.")
+
 
 if __name__ == "__main__":
     main()
