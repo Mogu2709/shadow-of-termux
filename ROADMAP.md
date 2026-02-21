@@ -1,35 +1,42 @@
 # 🐉 Shadow of Termux - Roadmap
 
 ## Current Version: v0.5 ✅
-- Hero skills: Slash, Fireball, Heal
-- Inventory system & equip
-- Potion usage from inventory
-- Boss spawn setiap 5 level
-- Loot & XP gain + leveling
-- Multi save + delete + preview
-- Clean & optimized code
+| Feature | Status | Notes |
+|---------|--------|-------|
+| Hero skills: Slash, Fireball, Heal | ✅ Complete | Default skills available |
+| Inventory system & equip | ✅ Complete | Weapon / Armor / Potion |
+| Potion usage from inventory | ✅ Complete | HP restore |
+| Boss spawn setiap 5 level | ✅ Complete | Scaling enemy / boss |
+| Loot & XP gain + leveling | ✅ Complete | Automatic after battle |
+| Multi save + delete + preview | ✅ Complete | Save slot per hero |
+| Clean & optimized code | ✅ Complete | Ready for GitHub release |
 
 ---
 
 ## Planned Features (Next Versions)
 
 ### v0.6 🚀
-- [ ] Tambah skill baru (misal Ice Blast, Lightning Strike)
-- [ ] Customizable hero class (Warrior, Mage, Rogue)
-- [ ] Mini-boss random event saat explore
-- [ ] Special items / equipment dengan efek unik
-- [ ] Pet companion system
+| Feature | Priority | Status | Notes |
+|---------|---------|--------|-------|
+| Add new skills (Ice Blast, Lightning Strike) | High | 🔲 Pending | Skill effects & damage scaling |
+| Customizable hero class (Warrior, Mage, Rogue) | High | 🔲 Pending | Affect starting stats & skills |
+| Mini-boss random events during explore | Medium | 🔲 Pending | Chance encounter for extra loot/XP |
+| Special items / unique equipment | Medium | 🔲 Pending | Example: Sword of Flames, Shield of Frost |
+| Pet companion system | Low | 🔲 Pending | Companion may attack or heal |
 
 ### v0.7 🔥
-- [ ] Dungeon / quest system
-- [ ] Puzzle / trap events
-- [ ] Timed events & achievements
-- [ ] Leaderboard / high score
-- [ ] Multiplayer ringan (turn-based via server / local)
+| Feature | Priority | Status | Notes |
+|---------|---------|--------|-------|
+| Dungeon / quest system | High | 🔲 Pending | Multi-room exploration |
+| Puzzle / trap events | Medium | 🔲 Pending | Solve or take damage |
+| Timed events & achievements | Medium | 🔲 Pending | Rewards for completing tasks |
+| Leaderboard / high score | Low | 🔲 Pending | Track hero levels / wins |
+| Lightweight multiplayer | Low | 🔲 Pending | Turn-based via local/server |
 
 ---
 
 ## Notes
-- Semua fitur baru harus tetap kompatibel dengan save system
-- Setiap versi stable akan ditag & release di GitHub
-- Screenshots dan gameplay GIF akan ditambahkan di release notes
+- All new features must be compatible with **multi save system**  
+- Stable releases will be **tagged & released on GitHub**  
+- Screenshots & gameplay GIFs will be added in future releases
+- Use **Priority column** to focus development first
