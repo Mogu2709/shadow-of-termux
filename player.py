@@ -10,33 +10,17 @@ class Player:
         self.potions = potions
         self.save_slot = save_slot
 
+        # Inventory & Equipment
+        self.inventory = []
+        self.equipment = {"weapon": None, "armor": None}
+
+        # Skills
+        self.skills = ["Slash", "Fireball"]
+
     def is_alive(self):
         return self.hp > 0
 
-    def use_potion(self):
-        if self.potions > 0:
-                self.hp += 30
-                self.potions -= 1
-                print(f"\n🧪 You used a potion! +30 HP")
-                print(f"Potions left: {self.potions}")
-        else:
-                print("\n❌ No potions left!")
-
-
-    def gain_xp(self, amount):
-        self.xp += amount
-        if self.xp >= 50:
-            self.level_up()
-
-    def level_up(self):
-        self.level += 1
-        self.hp += 20
-        self.attack += 5
-        self.xp = 0
-        print(f"\n🔥 LEVEL UP! You are now level {self.level}!")
-        print(f"HP increased to {self.hp}")
-        print(f"Attack increased to {self.attack}")
-
+    # Convert to dictionary for saving
     def to_dict(self):
         return {
             "name": self.name,
@@ -45,12 +29,16 @@ class Player:
             "level": self.level,
             "xp": self.xp,
             "potions": self.potions,
-            "save_slot":self.save_slot
+            "save_slot": self.save_slot,
+            "inventory": self.inventory,
+            "equipment": self.equipment,
+            "skills": self.skills
         }
 
+    # Load from dictionary
     @staticmethod
     def from_dict(data):
-        return Player(
+        p = Player(
             data["name"],
             data["hp"],
             data["attack"],
@@ -59,3 +47,34 @@ class Player:
             data["potions"],
             data.get("save_slot")
         )
+        p.inventory = data.get("inventory", [])
+        p.equipment = data.get("equipment", {"weapon": None, "armor": None})
+        p.skills = data.get("skills", ["Slash", "Fireball"])
+        return p
+
+    # Use a skill
+    def use_skill(self, skill_name, target):
+        if skill_name == "Slash":
+            dmg = self.attack + 5
+            target.hp -= dmg
+            print(f"⚡ {self.name} used Slash! {dmg} damage dealt!")
+        elif skill_name == "Fireball":
+            dmg = self.attack + 10
+            target.hp -= dmg
+            print(f"🔥 {self.name} cast Fireball! {dmg} damage dealt!")
+        elif skill_name == "Heal":
+            heal_amount = 30
+            self.hp += heal_amount
+            print(f"💖 {self.name} used Heal! Restored {heal_amount} HP!")
+        else:
+            print(f"❌ Unknown skill: {skill_name}")
+
+    # Gain XP (simple leveling)
+    def gain_xp(self, amount):
+        self.xp += amount
+        while self.xp >= self.level * 50:
+            self.xp -= self.level * 50
+            self.level += 1
+            self.hp += 10
+            self.attack += 2
+            print(f"🎉 {self.name} leveled up to Lv{self.level}!")

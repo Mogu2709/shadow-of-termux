@@ -1,10 +1,11 @@
 import random
 
 class Enemy:
-    def __init__(self, name, hp, attack):
+    def __init__(self, name, hp, attack, level=1):
         self.name = name
         self.hp = hp
         self.attack = attack
+        self.level = level
 
     def is_alive(self):
         return self.hp > 0
@@ -19,12 +20,9 @@ def generate_enemy(player_level):
     ]
 
     name, base_hp, base_attack = random.choice(enemies)
-
-    # Scaling berdasarkan level player
     hp = base_hp + (player_level * 5)
     attack = base_attack + (player_level * 2)
-
-    return Enemy(name, hp, attack)
+    return Enemy(name, hp, attack, level=player_level)
 
 def generate_boss(player_level):
     bosses = [
@@ -33,10 +31,8 @@ def generate_boss(player_level):
         ("Demon Overlord", 300, 40)
     ]
 
-    index = min(player_level // 5 - 1, len(bosses) - 1)
+    index = min(max(player_level // 5 - 1, 0), len(bosses) - 1)
     name, base_hp, base_attack = bosses[index]
-
     hp = base_hp + (player_level * 10)
     attack = base_attack + (player_level * 3)
-
-    return Enemy(name, hp, attack)
+    return Enemy(name, hp, attack, level=player_level)

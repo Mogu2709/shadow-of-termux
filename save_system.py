@@ -1,69 +1,49 @@
-import json
 import os
+import json
 
 SAVE_DIR = "saves"
 
 if not os.path.exists(SAVE_DIR):
     os.makedirs(SAVE_DIR)
 
-def get_save_preview(name):
-    filepath = os.path.join(SAVE_DIR, f"{name}.json")
-    with open(filepath, "r") as f:
-        data = json.load(f)
-    return data["level"], data["hp"]
-
-def delete_save(name):
-    filepath = os.path.join(SAVE_DIR, f"{name}.json")
-    if os.path.exists(filepath):
-        os.remove(filepath)
-        return True
-    return False
-    
 def save_game(player):
     if not player.save_slot:
         while True:
             save_name = input("Enter save name: ").strip().lower()
-
             if not save_name:
                 print("❌ Save name cannot be empty.")
                 continue
-
-            filename = f"{save_name}.json"
-            path = os.path.join(SAVE_DIR, filename)
-
+            path = os.path.join(SAVE_DIR, f"{save_name}.json")
             if os.path.exists(path):
-                print("❌ Save name already exists! Choose another name.")
+                print("❌ Save name already exists!")
                 continue
-
             player.save_slot = save_name
             break
 
-    filename = f"{player.save_slot}.json"
-    path = os.path.join(SAVE_DIR, filename)
-
+    path = os.path.join(SAVE_DIR, f"{player.save_slot}.json")
     with open(path, "w") as f:
         json.dump(player.to_dict(), f)
-
-    print(f"\n💾 Game saved in slot '{player.save_slot}'!") 
-           
-def list_saves():
-    files = os.listdir(SAVE_DIR)
-    saves = []
-
-    for f in files:
-        if f.endswith(".json"):
-            saves.append(f.replace(".json", ""))  # hapus .json
-
-    return saves
+    print(f"💾 Game saved in slot '{player.save_slot}'!")
 
 def load_game(save_name):
-    filename = f"{save_name}.json"
-    path = os.path.join(SAVE_DIR, filename)
-
+    path = os.path.join(SAVE_DIR, f"{save_name}.json")
     if not os.path.exists(path):
         return None
+    with open(path, "r") as f:
+        return json.load(f)
 
+def list_saves():
+    return [f.replace(".json","") for f in os.listdir(SAVE_DIR) if f.endswith(".json")]
+
+def get_save_preview(save_name):
+    path = os.path.join(SAVE_DIR, f"{save_name}.json")
     with open(path, "r") as f:
         data = json.load(f)
+    return data.get("level",1), data.get("hp",100)
 
-    return data
+def delete_save(save_name):
+    path = os.path.join(SAVE_DIR, f"{save_name}.json")
+    if os.path.exists(path):
+        os.remove(path)
+        return True
+    return False

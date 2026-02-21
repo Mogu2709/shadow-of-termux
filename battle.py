@@ -2,78 +2,75 @@ import random
 from colorama import Fore, Style
 
 def battle(player, enemy):
-    print(Fore.RED + f"\n⚔️ A wild {enemy.name} appears!")
-    print(Style.RESET_ALL)
-
-    skill_cooldown = 0
-
+    print(f"\n⚔ Encounter! {enemy.name} appears! Lv{enemy.level}")
     while player.is_alive() and enemy.is_alive():
-        print(f"\n{player.name} HP: {player.hp}")
-        print(f"{enemy.name} HP: {enemy.hp}")
-
-        print("\nChoose action:")
+        print(f"\nYour HP: {player.hp} | Enemy HP: {enemy.hp}")
         print("1. Attack")
-        print("2. Power Strike (Skill)")
-        print("3. Use Potion")
-        print("4. Run")
-        action = input(">> ")
+        print("2. Use Potion")
+        print("3. Use Skill")
 
-        if action == "1":
-            # Player attack
-            damage = player.attack + random.randint(-2, 5)
+        choice = input("Choose action: ").strip()
 
-            # Critical chance 20%
-            if random.random() < 0.2:
-                damage *= 2
-                print(Fore.YELLOW + "💥 CRITICAL HIT!")
-                print(Style.RESET_ALL)
+        if choice == "1":
+            dmg = player.attack
+            if player.equipment.get("weapon"):
+                dmg += 5
+            enemy.hp -= dmg
+            print(f"➡ You dealt {dmg} damage!")
 
-            enemy.hp -= damage
-            print(f"You dealt {damage} damage!")
-
-        elif action == "2":
-            if skill_cooldown == 0:
-                damage = int(player.attack * 1.5)
-                print("⚡ POWER STRIKE!")
-                enemy.hp -= damage
-                print(f"You deal {damage} damage!")
-                skill_cooldown = 3 
+        elif choice == "2":
+            if player.potions > 0:
+                heal = 20
+                player.hp += heal
+                player.potions -= 1
+                print(f"💊 You used a potion and healed {heal} HP!")
             else:
-                print(f"Skill on cooldown for {skill_cooldown} more turns!")
-                continue
-        
-        elif action == "3":
-                player.use_potion()
-                continue
+                print("❌ No potions left!")
 
-        elif action == "4":
-            print("You ran away safely!")
-            return
-
+        elif choice == "3":
+            print("Available Skills:")
+            for i, s in enumerate(player.skills):
+                print(f"{i+1}. {s}")
+            idx = input("Select skill: ").strip()
+            if idx.isdigit():
+                idx = int(idx) - 1
+                if 0 <= idx < len(player.skills):
+                    skill_name = player.skills[idx]
+                    player.use_skill(skill_name, enemy)
+                else:
+                    print("❌ Invalid skill number.")
+            else:
+                print("❌ Invalid input.")
         else:
-            print("Invalid choice!")
+            print("❌ Invalid action!")
             continue
 
-        # Enemy attack (if still alive)
         if enemy.is_alive():
-            enemy_damage = enemy.attack + random.randint(-2, 3)
-            player.hp -= enemy_damage
-            print(Fore.MAGENTA + f"{enemy.name} attacks you for {enemy_damage} damage!")
-            print(Style.RESET_ALL)
-	
-        if skill_cooldown > 0:
-            skill_cooldown -= 1
+            dmg = enemy.attack
+            if player.equipment.get("armor"):
+                dmg -= 5
+                dmg = max(0, dmg)
+            player.hp -= dmg
+            print(f"⬅ {enemy.name} dealt {dmg} damage!")
 
-    # End of battle
+    # After battle
     if player.is_alive():
-        print(Fore.GREEN + f"\n🎉 You defeated {enemy.name}!")
-        print(Style.RESET_ALL)
-        xp_gain = random.randint(20, 40)
-        if "Warlord" in enemy.name or "King" in enemy.name or "Overlord" in enemy.name:
+        print(f"\n✅ You defeated {enemy.name}!")
+
+        if "Dragon" in enemy.name or "Warlord" in enemy.name or "Overlord" in enemy.name:
             print("🎁 Boss defeated! You found 2 extra potions!")
             player.potions += 2
+
+        loot_chance = random.randint(1, 100)
+        if loot_chance <= 50:
+            item = random.choice(["Iron Sword", "Steel Armor", "Health Potion"])
+            player.inventory.append(item)
+            print(f"🎁 You found: {item}!")
+
+        xp_gain = enemy.level * 10
         print(f"You gained {xp_gain} XP!")
         player.gain_xp(xp_gain)
+
     else:
         print(Fore.RED + "\n💀 You were defeated...")
         print(Style.RESET_ALL)
